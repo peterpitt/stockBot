@@ -346,6 +346,8 @@ class DayTrader:
         if reason:
             await self._executor.exit(self._active_stock["stock_id"], price, reason)
             self._entered = False
+            self._abandoned = True  # 確保每日只交易一次，平倉出場後今天即收工結束，避免重複交易
+            logger.info("day_trade_completed", msg="今日唯一一檔個股交易已完成出場，安全收工")
 
     async def _force_close(self) -> None:
         if not self._active_stock:

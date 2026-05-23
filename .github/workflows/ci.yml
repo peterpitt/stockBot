@@ -1,0 +1,51 @@
+# .github/workflows/ci.yml
+name: Taiwan Stock Day-Trade System CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test-and-verify:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Install System Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libxml2-dev libxslt-dev
+
+    - name: Install Python Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Create Mock Config and Certs Directories
+      run: |
+        mkdir -p certs data/raw data/processed logs
+        # 建立 Mock 的憑證檔以供測試設定讀取
+        touch certs/Sinopac.pfx
+        # 建立 Mock 的 .env 檔案
+        cp .env.example .env
+
+    - name: Run Tests with Pytest
+      run: |
+        pytest -v
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Verify Docker Compose Build
+      run: |
+        docker compose build --no-cache

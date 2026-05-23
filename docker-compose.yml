@@ -1,0 +1,26 @@
+# docker-compose.yml
+# 注意：已移除 `version:` 屬性（Docker Compose v2 不再需要）
+# ─────────────────────────────────────────────────────────
+
+services:
+  daytrade:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: twse_daytrade
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      # 持久化資料與憑證（不進 image）
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./certs:/app/certs:ro       # 憑證唯讀掛載
+    environment:
+      - TZ=Asia/Taipei
+    network_mode: host               # 直接用 host 網路，降低延遲
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"

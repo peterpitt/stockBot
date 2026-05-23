@@ -1,0 +1,36 @@
+# Python compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pytest cache
+.pytest_cache/
+
+# Credentials & Sensitive Configs (CRITICAL SAFETY!)
+.env
+.env_test
+certs/*.pfx
+certs/*.key
+certs/*.crt
+certs/*.pem
+!certs/.gitkeep
+
+# Local databases & scraped data
+data/processed/*.db
+data/processed/*.json
+data/raw/*.csv
+!data/processed/.gitkeep
+!data/raw/.gitkeep
+
+# Logs
+logs/*.log
+logs/*.txt
+*.log
+
+# IDE & Editor configs
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
